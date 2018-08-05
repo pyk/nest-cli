@@ -1,8 +1,20 @@
-import { join } from 'path';
-import { AbstractRunner } from './abstract.runner';
+import { join } from "path";
+import { AbstractRunner } from "./abstract.runner";
+import { existsSync } from "fs";
 
 export class SchematicRunner extends AbstractRunner {
   constructor() {
-    super(`"${ join(__dirname, '../..', 'node_modules/.bin/schematics') }"`);
+    const globalSchematicsPath = `"${join(
+      __dirname,
+      "../..",
+      "node_modules/.bin/schematics"
+    )}"`;
+    // To handle nest-cli as devDependencies
+    const localSchematicPath = "node_modules/.bin/schematics";
+    if (existsSync(globalSchematicsPath)) {
+      super(globalSchematicsPath);
+    } else {
+      super(localSchematicPath);
+    }
   }
 }
